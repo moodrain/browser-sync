@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>moodrain sync</title>
+</head>
+<body>
+    <p>Channel</p>
+    <input id="channel-input">
+    <p>Message</p>
+    <input id="message-input">
+    <button id="send-button">send</button>
+    <div id="message-div"></div>
+K
+    <script>
+        let sock = null
+        let host = window.location.host
+        let wsUrl = `ws://${host}/ws`
+        let channel = window.location.pathname.replace('/', '')
+        channel = channel ? channel : 'World'
+
+        let newSock = (channel) => {
+            let sock = new WebSocket(wsUrl)
+            sock.addEventListener('open', () => {
+                sock.send('open@' + channel)
+            })
+            sock.addEventListener('close', () => {})
+            sock.addEventListener('message', e => {
+                let messageP = document.createElement('p')
+                messageP.innerHTML = e.data
+                document.querySelector('#message-div').prepend(messageP)
+            })
+            return sock
+        }
+        sock = newSock(channel)
+
+        document.querySelector('#channel-input').value = channel
+        document.querySelector('#channel-input').addEventListener('change', e => {
+            channel = e.target.value
+            channel = channel ? channel : 'World'
+            delete(sock)
+            sock = newSock(channel)   
+        })
+        document.querySelector('#send-button').addEventListener('click', () => {
+            sock.send(channel + ':' + document.querySelector('#message-input').value)
+        })
+    </script>
+</body>
+</html>
