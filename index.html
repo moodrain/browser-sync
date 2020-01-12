@@ -5,19 +5,61 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>moodrain sync</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        html, body, .container {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+        .row {
+            width: 100%;
+            margin: 10px auto;
+            text-align: center;
+        }
+        #channel-input {
+            width: 60%;
+        }
+        #message-textarea {
+            width: 60%;
+            height: 200px;
+        }
+        #message-div {
+            width: 60%;
+            height: 200px;
+            overflow-y: scroll;
+            margin: 10px auto;
+            border: 1px lightgray solid;
+        }
+    </style>
 </head>
 <body>
-    <p>Channel</p>
-    <input id="channel-input">
-    <p>Message</p>
-    <input id="message-input">
-    <button id="send-button">send</button>
-    <div id="message-div"></div>
-
+    <div class="container">
+        <div class="row">
+            <p>Channel</p>
+            <br />
+            <input id="channel-input">
+        </div>
+        <div class="row">
+        <p>Message</p>
+        <br />
+        <textarea id="message-textarea"></textarea>
+        <br />
+        <button id="send-button">Send</button>
+        </div>
+        <div class="row">
+            <p>Content</p>
+            <br />
+            <div id="message-div"></div>
+        </div>
+    </div>
     <script>
         let sock = null
         let host = window.location.host
-        let wsUrl = `ws://${host}/ws`
+        let wsUrl = `wss://${host}/ws`
         let channel = window.location.pathname.replace('/', '')
         channel = channel ? channel : 'World'
 
@@ -44,7 +86,7 @@
             sock = newSock(channel)   
         })
         document.querySelector('#send-button').addEventListener('click', () => {
-            sock.send(channel + ':' + document.querySelector('#message-input').value)
+            sock.send(channel + ':' + document.querySelector('#message-textarea').value)
         })
     </script>
 </body>

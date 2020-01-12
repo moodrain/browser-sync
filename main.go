@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/gorilla/websocket"
 	"io/ioutil"
 	"log"
@@ -115,7 +114,7 @@ func (conn *ConnWrapper) WsCloseHandler(_ int, _ string) error {
 
 func HttpIndexHandler(w http.ResponseWriter, _ *http.Request) {
 	indexHtml, _ := ioutil.ReadFile("index.html")
-	fmt.Fprintf(w, string(indexHtml))
+	_, _ = w.Write(indexHtml)
 }
 
 func HttpStatusHandler(w http.ResponseWriter, _ *http.Request) {
@@ -123,7 +122,7 @@ func HttpStatusHandler(w http.ResponseWriter, _ *http.Request) {
 	for _, channel := range channels {
 		html += channel.Name + ", socks count: " + strconv.Itoa(len(channel.Sockets)) + "\n"
 	}
-	fmt.Fprintf(w, html)
+	_, _ = w.Write([]byte(html))
 }
 
 
