@@ -78,7 +78,7 @@ func WebSocketHandler(w http.ResponseWriter, r *http.Request) {
 			if len(receiveArr) == 1 {
 				content = ""
 			} else {
-				content = receiveArr[1]
+				content = strings.Join(receiveArr[1:], ":")
 			}
 			for index := range channels {
 				channel := &channels[index]
